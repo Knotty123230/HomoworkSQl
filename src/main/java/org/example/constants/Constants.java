@@ -4,5 +4,5 @@ public class Constants {
     private Constants(){
 
     }
-    public final static String JDBS_URL = "jdbc:postgresql://localhost:5432/postgres";
+    public final static String JDBC_URL = "jdbc:postgresql://localhost:5432/postgres";
 }
