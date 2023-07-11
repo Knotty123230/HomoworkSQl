@@ -10,14 +10,14 @@ import java.util.List;
 public class Main {
     public static void main(String[] args) throws SQLException {
         extracted();
-        List<Client> clients = new ClientService().listAll();
-        System.out.println(clients);
+        new ClientService().deleteById(2);
 
     }
 
-    private static void extracted() {
+    private static void extracted() throws SQLException {
         Flyway flyway = Flyway.configure().dataSource("jdbc:postgresql://localhost:54321/postgres",
                 "myname", "mysecretpassword").load();
         flyway.migrate();
+        new ClientService().deleteById(4);
     }
 }
