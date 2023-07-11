@@ -22,6 +22,6 @@ public final class Database {
         } catch (ClassNotFoundException e1) {
             e1.fillInStackTrace();
         }
-        return DriverManager.getConnection(JDBC_URL);
+        return DriverManager.getConnection(JDBC_URL, user, pass);
     }
 }

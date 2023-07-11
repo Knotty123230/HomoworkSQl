@@ -1,16 +1,19 @@
 package org.example;
 
-import org.example.service.DatabasePopulateService;
+import org.example.dto.Client;
+import org.example.service.ClientService;
+import org.flywaydb.core.Flyway;
 
-import java.sql.Date;
+import java.sql.SQLException;
+import java.util.List;
 
 public class Main {
-    public static void main(String[] args){
+    public static void main(String[] args) throws SQLException {
+        Flyway flyway = Flyway.configure().dataSource("jdbc:postgresql://localhost:54321/postgres",
+                "myname", "mysecretpassword").load();
+        flyway.migrate();
+        List<Client> clients = new ClientService().listAll();
+        System.out.println(clients);
 
-       new DatabasePopulateService().populateClient("Vitaliy");
-       new DatabasePopulateService().populateProject(Date.valueOf("2022-10-12"),
-               1, Date.valueOf("2023-01-22"), "Project A");
-       new DatabasePopulateService().populateWorker("Vitaliy", "trainee", 1234, 2003);
-       new DatabasePopulateService().populateProjectWorker(1,1);
-  }
+    }
 }
