@@ -3,34 +3,28 @@ package org.example.service;
 import org.example.Database;
 import org.example.dto.Client;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.LinkedList;
 import java.util.List;
 
 public class ClientService {
     private PreparedStatement preparedStatement;
 
-    public long create(String name) throws SQLException {
+    public long create(String name)  {
+        int id = 0;
         try {
             Connection connection = getConnection();
-            preparedStatement = connection.prepareStatement("insert into client\n" +
-                    "                (name) VALUES (?)");
+            String sql = "insert into client\n" +
+                    "                (name) VALUES (?)";
+            preparedStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             preparedStatement.setString(1, name);
             preparedStatement.executeUpdate();
+            ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
+            while (generatedKeys.next()){
+                id = generatedKeys.getInt("id");
+            }
         } catch (SQLException e) {
             throw new RuntimeException(e);
-        }
-        int id = 0;
-        PreparedStatement read = getConnection().prepareStatement("SELECT id from client where name = ?");
-        read.setString(1, name);
-        ResultSet resultSet = read.executeQuery();
-        while (resultSet.next()) {
-            if (resultSet.isLast()) {
-                id = resultSet.getInt("id");
-            }
         }
         return id;
 
@@ -47,7 +41,7 @@ public class ClientService {
         return name;
     }
 
-    public void setName(long id, String name) throws SQLException {
+    public void update(long id, String name) throws SQLException {
         preparedStatement = getConnection().prepareStatement("update client set name = ? where id = ?");
         preparedStatement.setLong(2, id);
         preparedStatement.setString(1, name);
